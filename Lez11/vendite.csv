@@ -1,0 +1,7 @@
+data,prodotto,quantita,prezzo,citta
+,Pizza,2,8.50,Milano
+2024-01-01,Panino,,"15.99",
+2024-01-02,,1,8.50,
+,Insalata,3,abc,Napoli
+2024-01-03,Panino,2,,
+2024-01-03,Pizza,4,8.50,Roma

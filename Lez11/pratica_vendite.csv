@@ -1,0 +1,13 @@
+data,prodotto,quantita,prezzo,citta,venditore
+2024-01-01,Pizza,2,8.50,Milano,Anna
+2024-01-01,Panino,,5.00,Roma,Luca
+2024-01-02,Pizza,1,8.50,Milano,Anna
+2024-01-02,Insalata,3,abc,Napoli,Marco
+2024-01-03,Panino,,5.00,,Luca
+2024-01-03,Pizza,4,8.50,Roma,Anna
+2024-01-04,Insalata,1,7.00,Milano,Marco
+2024-01-04,Pizza,,8.50,Napoli,Anna
+2024-01-05,Panino,3,5.00,Roma,Luca
+2024-01-05,Insalata,2,,Milano,Marco
+2024-01-06,Pizza,,8.50,Roma,Anna
+2024-01-06,Panino,1,5.00,Napoli,Luca
