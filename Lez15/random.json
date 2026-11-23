@@ -1,0 +1,66 @@
+{
+"results": [
+    {
+    "gender": "female",
+    "name": {
+        "title": "Mrs",
+        "first": "Tina",
+        "last": "Simonović"
+    },
+    "location": {
+        "street": {
+        "number": 705,
+        "name": "Vragovačka"
+        },
+        "city": "Despotovac",
+        "state": "South Banat",
+        "country": "Serbia",
+        "postcode": 89744,
+        "coordinates": {
+        "latitude": "61.3417",
+        "longitude": "45.1675"
+        },
+        "timezone": {
+        "offset": "-3:30",
+        "description": "Newfoundland"
+        }
+    },
+    "email": "tina.simonovic@example.com",
+    "login": {
+        "uuid": "eb541f3c-e545-4a85-b6da-81cf731de2f9",
+        "username": "purpleleopard196",
+        "password": "slim",
+        "salt": "usuQFvpz",
+        "md5": "5518b6b053673ffcf31f7c5c0cebd472",
+        "sha1": "5101eb198a0732fe445be3c11499ee3bafac8f8b",
+        "sha256": "54b880d99b6c75e2e53c87058baf0490ce67c03e2338b344f7a3cd2c9a94ff5a"
+    },
+    "dob": {
+        "date": "1988-09-01T13:25:32.616Z",
+        "age": 38
+    },
+    "registered": {
+        "date": "2022-05-07T00:58:41.570Z",
+        "age": 4
+    },
+    "phone": "011-8919-570",
+    "cell": "060-9674-470",
+    "id": {
+        "name": "SID",
+        "value": "455900109"
+    },
+    "picture": {
+        "large": "https://randomuser.me/api/portraits/women/44.jpg",
+        "medium": "https://randomuser.me/api/portraits/med/women/44.jpg",
+        "thumbnail": "https://randomuser.me/api/portraits/thumb/women/44.jpg"
+    },
+    "nat": "RS"
+    }
+],
+"info": {
+    "seed": "5c2e47d19883a9e2",
+    "results": 1,
+    "page": 1,
+    "version": "1.4"
+}
+}

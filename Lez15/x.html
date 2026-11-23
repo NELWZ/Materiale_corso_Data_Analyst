@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Demo</title>
+    <style>
+        :root {
+            font-family: cursive
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(450deg, #0c0c0c, #343434);
+        }
+
+        button {
+            padding: 0.6em 1.4em;
+            border: 3px solid #2563eb;
+            border-radius: 0.75em;
+            background: #2563eb;
+            color: white;
+            font: inherit;
+            font-size: clamp(1.5rem, 8vw, 3rem);
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 0.35em 0.8em rgba(37, 100, 235, 0.782);
+            transition: background-color 200ms ease, border-color 200ms ease,
+                transform 200ms ease, box-shadow 200ms ease;
+        }
+
+        button:hover {
+            border-color: #db2777;
+            background: #db2777;
+            transform: translateY(-3px);
+            box-shadow: 0 0.55em 1em rgba(219, 39, 120, 0.79);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:focus-visible {
+            outline: 4px solid #f9a8d4;
+            outline-offset: 4px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            button {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button type="button">Ciao</button>
+</body>
+</html>
