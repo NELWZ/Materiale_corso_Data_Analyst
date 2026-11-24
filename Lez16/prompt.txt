@@ -1,0 +1,30 @@
+Devo avere un Admin Panel
+sito/admin
+include:
+1-Gestione Totale del sito e ogni suo aspetto: 
+Colori, Font, testi di ogni pagina del sito,
+Cards, prezzi, pulsanti, animazioni e tutto il resto.
+
+2-deve essere sicuro(per esempio conuso di firebase)
+3-pagamenti via STRIPE
+4-API NASCOSTI
+5-admin deve poter creare, modificare, eliminare e gestire OGNI aspetto
+e OGNI elemento del sito
+6- cera un form usando FormSubmit o Tally con iframe
+preferisco FormSubmit: quando tocco il limite massimo di FormSubmit
+cambia il servizio e mantieni il sito intatto
+7- Voglio le posizioni con OpenMaps
+8- voglio una sezione con analisi del mio sito, visite, click ect tramite API di goofle analytics
+
+9-voglio un utente possa creare un account con la verifica della sua email
+e verifica a doppio fattore: (non so come fare, dammi le 3 migliori 
+alternative, gratuite)
+
+tutto questo lo voglio gratis, ma se dovessi superare i limiti per forza.
+dimmi al massimo quanto mi costa giornalmente, mensilmente
+
+
+
+questa sono io: linkaltuosito
+chi sono i miei rivali?
+dove vinco?
