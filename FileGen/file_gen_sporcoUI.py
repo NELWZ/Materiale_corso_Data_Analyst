@@ -1,8 +1,10 @@
 import csv
 import random
 import os
+import time
 import tkinter as tk
 from tkinter import filedialog, messagebox
+from tkinter import ttk
 
 # ═══════════════════════════════════════════════════════════
 # CONFIGURAZIONE
@@ -15,20 +17,21 @@ def mostra_configurazione():
     root.title('FileGen | Generatore CSV sporchi')
     root.configure(bg=bg)
     root.resizable(False, False)
-    root.option_add('*Font', ('Segoe UI', 10))
+    root.geometry('900x680')
+    root.option_add('*Font', ('Segoe UI', 11))
     result, entries = {}, {}
 
     header = tk.Frame(root, bg=bg)
-    header.pack(fill='x', padx=24, pady=(22, 14))
+    header.pack(fill='x', padx=30, pady=(26, 18))
     tk.Label(header, text='FILEGEN', bg=bg, fg=accent,
-             font=('Segoe UI', 10, 'bold')).pack(anchor='w')
+             font=('Segoe UI', 11, 'bold')).pack(anchor='w')
     tk.Label(header, text='Generatore di dataset CSV', bg=bg, fg=text,
-             font=('Segoe UI', 20, 'bold')).pack(anchor='w', pady=(3, 2))
+             font=('Segoe UI', 24, 'bold')).pack(anchor='w', pady=(5, 4))
     tk.Label(header, text='Configura i dati e genera i file in pochi secondi.',
              bg=bg, fg=muted).pack(anchor='w')
 
-    card = tk.Frame(root, bg=panel, padx=18, pady=14)
-    card.pack(fill='x', padx=24, pady=(0, 14))
+    card = tk.Frame(root, bg=panel, padx=22, pady=18)
+    card.pack(fill='x', padx=30, pady=(0, 18))
     fields = [
         ('seed', 'Seed casuale', '42'),
         ('rows', 'Righe per file', '50'),
@@ -41,9 +44,9 @@ def mostra_configurazione():
         entry = tk.Entry(card, bg=field, fg=text, insertbackground=text,
                          relief='flat', highlightthickness=1,
                          highlightbackground='#374151', highlightcolor=accent,
-                         width=28)
+                         width=32, font=('Segoe UI', 11))
         entry.insert(0, default)
-        entry.grid(row=row, column=1, sticky='ew', ipady=7, pady=4)
+        entry.grid(row=row, column=1, sticky='ew', ipady=9, pady=5)
         entries[key] = entry
         if key == 'seed':
             seed_disabled = tk.BooleanVar(value=False)
@@ -72,8 +75,8 @@ def mostra_configurazione():
         tk.Scale(card, from_=0, to=100, orient='horizontal', resolution=1,
                  variable=value, bg=panel, fg=text, troughcolor=field,
                  activebackground=accent, highlightthickness=0,
-                 showvalue=True, length=220).grid(
-                     row=row, column=1, sticky='ew', pady=2)
+                 showvalue=True, length=260, font=('Segoe UI', 10)).grid(
+                     row=row, column=1, sticky='ew', pady=4)
         percent_vars[key] = value
     card.columnconfigure(1, weight=1)
 
@@ -83,11 +86,12 @@ def mostra_configurazione():
              anchor='w').grid(row=row_index, column=0, sticky='w',
                               padx=(0, 18), pady=5)
     folder_row = tk.Frame(card, bg=panel)
-    folder_row.grid(row=row_index, column=1, sticky='ew', pady=4)
+    folder_row.grid(row=row_index, column=1, sticky='ew', pady=5)
     tk.Entry(folder_row, textvariable=folder_var, bg=field, fg=text,
              insertbackground=text, relief='flat', highlightthickness=1,
-             highlightbackground='#374151', highlightcolor=accent
-             ).pack(side='left', fill='x', expand=True, ipady=7)
+             highlightbackground='#374151', highlightcolor=accent,
+             font=('Segoe UI', 11)
+             ).pack(side='left', fill='x', expand=True, ipady=9)
 
     def scegli_cartella():
         selected = filedialog.askdirectory(initialdir=folder_var.get(), parent=root)
@@ -111,12 +115,22 @@ def mostra_configurazione():
                 duplicates = percent_vars['duplicates'].get() / 100
                 prefix = entries['prefix'].get().strip()
                 folder = folder_var.get().strip()
-                if rows < 1 or count < 1:
-                    raise ValueError('Righe e numero di file devono essere maggiori di zero.')
+                if not 1 <= rows <= 100_000_000:
+                    raise ValueError('Le righe devono essere comprese tra 1 e 100 milioni.')
+                if not 1 <= count <= 10_000:
+                    raise ValueError('Il numero di file deve essere compreso tra 1 e 10.000.')
                 if any(not 0 <= value <= 1 for value in (dirty, empty, duplicates)):
                     raise ValueError('Le percentuali devono essere comprese tra 0 e 1.')
                 if not prefix or not os.path.isdir(folder):
                     raise ValueError('Inserisci un prefisso e seleziona una cartella valida.')
+                if rows * count > 1_000_000 or count > 100:
+                    if not messagebox.askyesno(
+                        'Generazione impegnativa',
+                        f'La richiesta creerà {rows * count:,} righe complessive '
+                        f'in {count:,} file. Potrebbero servire molto tempo e spazio '
+                        'su disco. Vuoi continuare?', parent=root
+                    ):
+                        return
                 result.update(seed=seed, rows=rows, count=count, dirty=dirty,
                             empty=empty, duplicates=duplicates, prefix=prefix,
                             folder=folder)
@@ -125,13 +139,13 @@ def mostra_configurazione():
             messagebox.showerror('Parametri non validi', str(exc), parent=root)
 
     footer = tk.Frame(root, bg=bg)
-    footer.pack(fill='x', padx=24, pady=(0, 20))
+    footer.pack(fill='x', padx=30, pady=(0, 24))
     tk.Label(footer, text='Lascia vuoto il seed per ottenere dati diversi ogni volta.',
-             bg=bg, fg=muted, font=('Segoe UI', 9)).pack(side='left')
+             bg=bg, fg=muted, font=('Segoe UI', 10)).pack(side='left')
     tk.Button(footer, text='GENERA CSV', command=genera, bg=accent,
               fg='#082f49', activebackground='#7dd3fc', activeforeground='#082f49',
-              relief='flat', font=('Segoe UI', 10, 'bold'), padx=18,
-              pady=10, cursor='hand2').pack(side='right')
+              relief='flat', font=('Segoe UI', 11, 'bold'), padx=22,
+              pady=12, cursor='hand2').pack(side='right')
     root.bind('<Return>', lambda _event: genera())
     root.mainloop()
     return result
@@ -201,66 +215,8 @@ metodi_pagamento = ['Carta', 'Contanti', 'Bonifico', 'PayPal']
 tipi_cliente = ['Nuovo', 'Fedele', 'VIP']
 
 # ═══════════════════════════════════════════════════════════
-# GENERAZIONE RIGHE "PULITE" (base)
-# ═══════════════════════════════════════════════════════════
-righe = []
-
-for _ in range(MAX_RIGHE):
-    mese = random.randint(1, 12)
-    giorno = random.randint(1, 28)
-    data = f"2024-{mese:02d}-{giorno:02d}"
-
-    citta, regione = random.choice(citta_regioni)
-    categoria = random.choice(categorie)
-    prodotto = random.choice(prodotti[categoria])
-
-    pmin, pmax = prezzi[categoria]
-    prezzo_unit = round(random.uniform(pmin, pmax), 2)
-    quantita = random.randint(1, 10)
-    totale = round(prezzo_unit * quantita, 2)
-
-    # Sconto applicato al ~22% delle righe, con range per categoria
-    if random.random() < 0.22:
-        smin, smax = sconto_tipico[categoria]
-        sconto = round(random.uniform(smin, smax), 2)
-    else:
-        sconto = 0.0
-    totale_scontato = round(totale * (1 - sconto), 2)
-
-    cliente = random.choices(
-        tipi_cliente, weights=[0.5, 0.35, 0.15], k=1
-    )[0]  # più nuovi che VIP, realistico
-    eta = random.randint(18, 75)
-    pagamento = random.choices(
-        metodi_pagamento, weights=[0.5, 0.15, 0.20, 0.15], k=1
-    )[0]
-
-    righe.append({
-        'data': data,
-        'città': citta,
-        'regione': regione,
-        'categoria': categoria,
-        'prodotto': prodotto,
-        'prezzo_unitario': prezzo_unit,
-        'quantità': quantita,
-        'totale': totale,
-        'sconto': sconto,
-        'totale_scontato': totale_scontato,
-        'tipo_di_cliente': cliente,
-        'età_cliente': eta,
-        'metodo_di_pagamento': pagamento,
-    })
-
-# ═══════════════════════════════════════════════════════════
 # INIEZIONE DIFETTI
 # ═══════════════════════════════════════════════════════════
-
-# --- 1) Celle vuote (le più comuni nei CSV reali) ----------
-for riga in righe:
-    for campo in riga:
-        if random.random() < PCT_CELLE_VUOTE:
-            riga[campo] = ''
-
 # --- 2) Difetti "gravi" su una % di righe ------------------
 def inietta_difetto(riga):
     """Sceglie un tipo di errore e lo applica. Ritorna il nome dell'errore."""
@@ -292,10 +248,10 @@ def inietta_difetto(riga):
     elif errore == 'regione_errata':
         riga['regione'] = random.choice(['Regione sconosciuta', 'N/D', ''])
     elif errore == 'data_slash':
-        riga['data'] = riga['data'].replace('-', '/')       # 2024/03/07
-    elif errore == 'data_invertita':
+        riga['data'] = riga['data'].replace('-', '/')
+    elif errore == 'data_invertita' and riga['data']:
         a, m, g = riga['data'].split('-')
-        riga['data'] = f"{g}/{m}/{a}"                        # 07/03/2024
+        riga['data'] = f"{g}/{m}/{a}"
     elif errore == 'data_futura':
         riga['data'] = f"2025-{random.randint(1,12):02d}-{random.randint(1,28):02d}"
     elif errore == 'data_testo':
@@ -340,39 +296,146 @@ def inietta_difetto(riga):
         )
     return errore
 
-n_difettosi = 0
-for riga in righe:
+def genera_riga():
+    mese, giorno = random.randint(1, 12), random.randint(1, 28)
+    data = f'2024-{mese:02d}-{giorno:02d}'
+    citta, regione = random.choice(citta_regioni)
+    categoria = random.choice(categorie)
+    prodotto = random.choice(prodotti[categoria])
+    pmin, pmax = prezzi[categoria]
+    prezzo_unit = round(random.uniform(pmin, pmax), 2)
+    quantita = random.randint(1, 10)
+    totale = round(prezzo_unit * quantita, 2)
+    if random.random() < 0.22:
+        smin, smax = sconto_tipico[categoria]
+        sconto = round(random.uniform(smin, smax), 2)
+    else:
+        sconto = 0.0
+    cliente = random.choices(tipi_cliente, weights=[0.5, 0.35, 0.15], k=1)[0]
+    return {
+        'data': data, 'città': citta, 'regione': regione,
+        'categoria': categoria, 'prodotto': prodotto,
+        'prezzo_unitario': prezzo_unit, 'quantità': quantita,
+        'totale': totale, 'sconto': sconto,
+        'totale_scontato': round(totale * (1 - sconto), 2),
+        'tipo_di_cliente': cliente, 'età_cliente': random.randint(18, 75),
+        'metodo_di_pagamento': random.choices(
+            metodi_pagamento, weights=[0.5, 0.15, 0.20, 0.15], k=1)[0],
+    }
+
+
+def applica_difetti(riga):
     if random.random() < QUANTO_SPORCO:
         inietta_difetto(riga)
-        n_difettosi += 1
-
-# --- 3) Alcune celle numeriche diventano float con virgola ---
-# (simula CSV esportati da Excel in locale IT)
-for riga in righe:
+    for campo in riga:
+        if random.random() < PCT_CELLE_VUOTE:
+            riga[campo] = ''
     for campo in ('prezzo_unitario', 'totale', 'totale_scontato'):
-        val = riga[campo]
-        if isinstance(val, (int, float)) and random.random() < 0.02:
-            riga[campo] = str(val).replace('.', ',')   # "12,50"
+        valore = riga[campo]
+        if isinstance(valore, (int, float)) and random.random() < 0.02:
+            riga[campo] = str(valore).replace('.', ',')
+    return riga
 
-# --- 4) Duplicati in coda ---------------------------------
-n_dup = round(len(righe) * PCT_DUPLICATI)
-for _ in range(n_dup):
-    righe.append(random.choice(righe).copy())
 
-# ═══════════════════════════════════════════════════════════
-# SCRITTURA
-# ═══════════════════════════════════════════════════════════
-if not righe:
-    raise ValueError("Nessuna riga generata.")
+def avvia_generazione():
+    n_dup = round(MAX_RIGHE * PCT_DUPLICATI)
+    unita_totali = NUMERO_FILES * (MAX_RIGHE + n_dup)
+    finestra = tk.Tk()
+    finestra.title('FileGen | Generazione in corso')
+    finestra.geometry('620x230')
+    finestra.resizable(False, False)
+    finestra.protocol('WM_DELETE_WINDOW', lambda: annulla())
+    tk.Label(finestra, text='Generazione dei CSV',
+             font=('Segoe UI', 16, 'bold')).pack(anchor='w', padx=24, pady=(20, 8))
+    stato = tk.Label(finestra, text='Preparazione...', font=('Segoe UI', 10))
+    stato.pack(anchor='w', padx=24)
+    barra = ttk.Progressbar(finestra, maximum=unita_totali, mode='determinate')
+    barra.pack(fill='x', padx=24, pady=12)
+    dettagli = tk.Label(finestra, text='', font=('Segoe UI', 10))
+    dettagli.pack(anchor='w', padx=24)
+    stato_lavoro = {'annullato': False, 'file': None, 'scritti': 0,
+                    'inizio': time.monotonic()}
 
-for i in range(NUMERO_FILES):
-    with open(FILE_OUT[i], 'w', encoding='utf-8', newline='') as f:
-        writer = csv.DictWriter(f, fieldnames=righe[0].keys())
-        writer.writeheader()
-        writer.writerows(righe)
+    def annulla():
+        stato_lavoro['annullato'] = True
+        stato.configure(text='Annullamento in corso...')
 
-print(f"    Creato {FILE_OUT}")
-print(f"   Righe totali:     {len(righe)}")
-print(f"   Righe 'pulite':   {len(righe) - n_difettosi - n_dup}")
-print(f"   Righe difettose:  {n_difettosi}")
-print(f"   Duplicati:        {n_dup}")
+    tk.Button(finestra, text='Annulla', command=annulla).pack(anchor='e', padx=24, pady=12)
+
+    def aggiorna():
+        totale = stato_lavoro['scritti']
+        trascorso = max(time.monotonic() - stato_lavoro['inizio'], 0.001)
+        velocita = totale / trascorso
+        eta = (unita_totali - totale) / velocita if velocita else 0
+        percento = totale * 100 / unita_totali
+        barra['value'] = totale
+        dettagli.configure(
+            text=f'{totale:,} / {unita_totali:,} righe ({percento:.1f}%)  |  '
+                 f'{velocita:,.0f} righe/s  |  tempo residuo ~{eta / 60:.1f} min')
+
+    def passo(file_index=0, indice_riga=0, fase='dati', writer=None,
+              campione=None, handle=None):
+        if stato_lavoro['annullato']:
+            if handle:
+                handle.close()
+            finestra.destroy()
+            messagebox.showwarning('Generazione annullata',
+                                   'La generazione è stata interrotta. I file già creati possono essere incompleti.')
+            return
+        try:
+            budget = 2000
+            while budget and file_index < NUMERO_FILES:
+                if handle is None:
+                    if SEED is not None:
+                        random.seed(SEED)
+                    handle = open(FILE_OUT[file_index], 'w', encoding='utf-8', newline='')
+                    writer = csv.DictWriter(handle, fieldnames=list(genera_riga().keys()))
+                    writer.writeheader()
+                    campione = []
+                    indice_riga, fase = 0, 'dati'
+                if fase == 'dati' and indice_riga < MAX_RIGHE:
+                    riga = applica_difetti(genera_riga())
+                    writer.writerow(riga)
+                    if len(campione) < 10_000:
+                        campione.append(riga.copy())
+                    indice_riga += 1
+                elif fase == 'dati':
+                    fase = 'duplicati'
+                elif indice_riga < n_dup:
+                    writer.writerow(random.choice(campione).copy())
+                    indice_riga += 1
+                else:
+                    handle.close()
+                    handle = None
+                    file_index += 1
+                    indice_riga, fase = 0, 'dati'
+                    continue
+                stato_lavoro['scritti'] += 1
+                budget -= 1
+            if file_index >= NUMERO_FILES:
+                aggiorna()
+                finestra.destroy()
+                messagebox.showinfo(
+                    'Generazione completata',
+                    f'Creati {NUMERO_FILES:,} file.\n'
+                    f'Righe per file: {MAX_RIGHE + n_dup:,} '
+                    f'(incluse {n_dup:,} copie duplicate).\n'
+                    f'Righe totali scritte: {unita_totali:,}.',
+                )
+                print(f'Creati {NUMERO_FILES:,} file: {FILE_OUT[0]} ... {FILE_OUT[-1]}')
+                return
+            stato.configure(text=f'File {file_index + 1:,} di {NUMERO_FILES:,}: {os.path.basename(FILE_OUT[file_index])}')
+            aggiorna()
+            finestra.after(1, lambda: passo(file_index, indice_riga, fase, writer, campione, handle))
+        except (OSError, csv.Error, ValueError) as exc:
+            if handle:
+                handle.close()
+            finestra.destroy()
+            messagebox.showerror('Errore durante la generazione',
+                                 f'{exc}\n\nGenerazione interrotta; i file incompleti non sono stati rimossi.')
+
+    finestra.after(50, passo)
+    finestra.mainloop()
+
+
+avvia_generazione()
